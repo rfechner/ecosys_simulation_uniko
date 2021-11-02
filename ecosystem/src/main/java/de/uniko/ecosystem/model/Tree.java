@@ -1,27 +1,77 @@
 package de.uniko.ecosystem.model;
 
+import de.uniko.ecosystem.util.Pair;
 import javafx.scene.shape.Rectangle;
 
-public class Tree extends Rectangle {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class Tree extends Rectangle implements Serializable {
     private static final int START_SIZE = 3;
+
+    // the idea being that constanty performing euclidean distance check to
+    // find the neighbors is too expensive. Once a tree is created, it should inform all
+    // neighbors about its existance. The list keeps track of trees and their corresponding distances.
+    private List<Pair<Tree, Double>> neighbors = new ArrayList<>();
+
+    // threshhold
+    private static final int THRESHOLD = 10;
+
     private TreeType type;
     private int health;
     private int age;
+    private int xpos, ypos;
 
-    public Tree(int xpos, int ypos, TreeType type){
+    protected Tree(int xpos, int ypos){
         super(xpos, ypos, START_SIZE, START_SIZE);
-        this.type = type;
         this.health = 100;
         this.age = 0;
+        this.xpos = xpos;
+        this.ypos = ypos;
+
+        // color tree accordingly
+        this.setImagePattern();
+
+        // update neighbors for this and all other trees.
+        this.informNeighbors();
     }
 
 
-    public void update(){
-        // this.health = ..
+    private void informNeighbors(){
+        for(Tree other : Model.getInstance().getTrees()){
+            double distance = this.distance(other);
 
+            if(distance <= THRESHOLD){
+                other.neighbors.add(new Pair<Tree,Double>(this, distance));
+                this.neighbors.add(new Pair<Tree,Double>(other, distance));
+            }
+        }
     }
 
-    public void createOffspring(){
-        // add new tree of same type to models buffer.
+    public static Tree createTree(int xpos, int ypos, TreeType treeType){
+        Tree ret;
+
+        switch (treeType){
+            case SPRUCE: ret =  new Spruce(xpos, ypos); break;
+            default : throw new IllegalArgumentException("TreeType : "+treeType+" is not recognized");
+        }
+
+        return ret;
     }
+
+    /**
+     *
+     * @param other Tree to be compared to
+     * @return euclidean distance to other tree
+     */
+    private double distance(Tree other){
+        return Math.sqrt(Math.pow(this.xpos - other.xpos, 2) + Math.pow(this.ypos - other.ypos, 2));
+    }
+
+    public abstract void setImagePattern();
+
+    public abstract void update();
+
+    public abstract void createOffspring();
 }
