@@ -1,0 +1,42 @@
+
+K
+java:S1659$")Declare "permutation" on a separate line.(Μ©–ώÿÿÿÿ8οά‰®Ξ/
+V
+java:S1118":Add a private constructor to hide the implicit public one.(©•'8οά‰®Ξ/
+g
+java:S1124"EReorder the modifiers to comply with the Java Language Specification.(ψΤΎϋÿÿÿÿ8πά‰®Ξ/
+<
+java:S1659"Declare "Y" on a separate line.(Θκ”±8πά‰®Ξ/
+<
+java:S1659	"Declare "Z" on a separate line.(Αβÿ8πά‰®Ξ/
+;
+java:S1659"Declare "v" on a separate line.(ρξ-8πά‰®Ξ/
+<
+java:S1659"Declare "w" on a separate line.(§ °΅8πά‰®Ξ/
+B
+java:S1659" Declare "AA" on a separate line.(Θ£‡ψÿÿÿÿ8ρά‰®Ξ/
+B
+java:S1659" Declare "AB" on a separate line.(Θ£‡ψÿÿÿÿ8ρά‰®Ξ/
+A
+java:S1659"Declare "B" on a separate line.(„ώεξψÿÿÿÿ8ρά‰®Ξ/
+B
+java:S1659" Declare "BA" on a separate line.(„ώεξψÿÿÿÿ8ρά‰®Ξ/
+B
+java:S1659" Declare "BB" on a separate line.(„ώεξψÿÿÿÿ8ρά‰®Ξ/
+A
+java:S1659!"Declare "v" on a separate line.(‡άφ³ωÿÿÿÿ8υά‰®Ξ/
+f
+java:S3358!"DExtract this nested ternary operation into an independent statement.(‡άφ³ωÿÿÿÿ8υά‰®Ξ/
+Z
+java:S1197$"8Move the array designator from the variable to the type.(Μ©–ώÿÿÿÿ8υά‰®Ξ/
+Z
+java:S1197$"8Move the array designator from the variable to the type.(Μ©–ώÿÿÿÿ8φά‰®Ξ/
+r	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ΧωΌώύÿÿÿÿ8φά‰®Ξ/
+m	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Θκ”±8φά‰®Ξ/
+m	java:S117	"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Αβÿ8φά‰®Ξ/
+r	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Θ£‡ψÿÿÿÿ8φά‰®Ξ/
+r	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Θ£‡ψÿÿÿÿ8φά‰®Ξ/
+r	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Θ£‡ψÿÿÿÿ8χά‰®Ξ/
+r	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(„ώεξψÿÿÿÿ8χά‰®Ξ/
+r	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(„ώεξψÿÿÿÿ8χά‰®Ξ/
+r	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(„ώεξψÿÿÿÿ8χά‰®Ξ/

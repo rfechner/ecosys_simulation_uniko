@@ -5,30 +5,28 @@ import de.uniko.ecosystem.util.Pair;
 import javafx.scene.shape.Rectangle;
 
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Tree extends Rectangle implements Serializable {
-    private static final int START_SIZE = 3;
+    private static final int START_SIZE = 1;
 
     // the idea being that constanty performing euclidean distance check to
     // find the neighbors is too expensive. Once a tree is created, it should inform all
     // neighbors about its existance. The list keeps track of trees and their corresponding distances.
-    private List<Pair<Tree, Double>> neighbors = new ArrayList<>();
+    List<Pair<Tree, Double>> neighbors = new ArrayList<>();
 
     // threshhold
     private static final int THRESHOLD = 10;
 
-    private int health;
-    private int age;
-    private int xpos, ypos;
+    int health;
+    int age;
 
     protected Tree(int xpos, int ypos){
         super(xpos, ypos, START_SIZE, START_SIZE);
         this.health = 100;
         this.age = 0;
-        this.xpos = xpos;
-        this.ypos = ypos;
 
         // color tree accordingly
         this.setImagePattern();
@@ -67,7 +65,7 @@ public abstract class Tree extends Rectangle implements Serializable {
      * @return euclidean distance to other tree
      */
     private double distance(Tree other){
-        return Math.sqrt(Math.pow(this.xpos - (double)other.xpos, 2) + Math.pow(this.ypos - (double)other.ypos, 2));
+        return Math.sqrt(Math.pow(this.getX() - other.getX(), 2) + Math.pow(this.getY() - other.getY(), 2));
     }
 
     public abstract void setImagePattern();

@@ -14,8 +14,7 @@ import java.util.Random;
 
 public class Model implements Serializable {
 
-    private static double NUM_MAX_TREES = 1e2;
-    private static Model INSTANCE;
+    private static Model instance;
     private static final Random random = new Random();
     private ObservableList<Tree> trees = FXCollections.observableArrayList(new ArrayList<>());
     private transient List<Tree> treeBuffer = new ArrayList<>();
@@ -26,11 +25,11 @@ public class Model implements Serializable {
     }
 
     public static Model getInstance(){
-        if(INSTANCE == null){
-            INSTANCE = new Model();
+        if(instance == null){
+            instance = new Model();
         }
 
-        return INSTANCE;
+        return instance;
     }
 
     public void update(){
@@ -58,15 +57,21 @@ public class Model implements Serializable {
     }
 
     public void init(){
+        int x_offset = 20; // draw 20 pixels more because of split screen border
+        int width = 400;
+        int height = 400;
 
-        for (int i = 0; i < 200; i++) {
-            for (int j = 0; j < 200; j++) {
-                double currentX = (double) j / 10;
-                double currentY = (double) i / 10;
-                double prob = PerlinNoise.noise(currentX,currentY,0);
-                if(prob > 0.3){
-                    // tree at that position
-                    this.trees.add(Tree.createTree(i,j,Spruce.class));
+        // idea: create perlin noise once, then let user decide parameters for terrain formation.
+        for (int x = 0; x < width + x_offset; x+=4) {
+            for (int y = 0; y < height; y+=4) {
+                double currentX = (double) y / 20;
+                double currentY = (double) x / 20;
+                double noiseValue = PerlinNoise.noise(currentX,currentY,0);
+
+                // 0.2 seems to be an okay-ish threshold for generating tree-groups
+                if(noiseValue > 0.1 && random.nextDouble() > 0.8){
+                    this.trees.add(Tree.createTree(x,y,Spruce.class));
+
                 }
 
             }
