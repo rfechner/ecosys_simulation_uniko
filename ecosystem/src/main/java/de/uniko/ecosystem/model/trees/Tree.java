@@ -1,5 +1,6 @@
-package de.uniko.ecosystem.model;
+package de.uniko.ecosystem.model.trees;
 
+import de.uniko.ecosystem.model.Model;
 import de.uniko.ecosystem.util.Pair;
 import javafx.scene.shape.Rectangle;
 
@@ -18,7 +19,6 @@ public abstract class Tree extends Rectangle implements Serializable {
     // threshhold
     private static final int THRESHOLD = 10;
 
-    private TreeType type;
     private int health;
     private int age;
     private int xpos, ypos;
@@ -49,12 +49,13 @@ public abstract class Tree extends Rectangle implements Serializable {
         }
     }
 
-    public static Tree createTree(int xpos, int ypos, TreeType treeType){
+    public static Tree createTree(int xpos, int ypos, Class<?> cls){
         Tree ret;
 
-        switch (treeType){
-            case SPRUCE: ret =  new Spruce(xpos, ypos); break;
-            default : throw new IllegalArgumentException("TreeType : "+treeType+" is not recognized");
+        switch (cls.getSimpleName()){
+            case "Spruce": ret =  new Spruce(xpos, ypos); break;
+            default : throw new IllegalArgumentException(cls.getSimpleName()+" is not recognized as a class extending Tree, or" +
+                    "this functionality isnt implemented yet.");
         }
 
         return ret;
@@ -66,7 +67,7 @@ public abstract class Tree extends Rectangle implements Serializable {
      * @return euclidean distance to other tree
      */
     private double distance(Tree other){
-        return Math.sqrt(Math.pow(this.xpos - other.xpos, 2) + Math.pow(this.ypos - other.ypos, 2));
+        return Math.sqrt(Math.pow(this.xpos - (double)other.xpos, 2) + Math.pow(this.ypos - (double)other.ypos, 2));
     }
 
     public abstract void setImagePattern();

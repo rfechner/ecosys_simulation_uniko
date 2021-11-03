@@ -2,6 +2,8 @@ package de.uniko.ecosystem.control;
 
 import de.uniko.ecosystem.model.Model;
 
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
@@ -9,8 +11,9 @@ import javafx.scene.layout.Pane;
 
 public class Controller {
 
-    public Model model;
-
+    private Model model;
+    private int renderEveryNFrames;
+    private int numEpisodes;
 
     @FXML
     public Button startButton;
@@ -23,22 +26,52 @@ public class Controller {
 
     @FXML
     public void startSimulationButtonPressed(){
-        // readout deltaTime, totalEpisodes... additional information
-        int deltaTime = 1;
-        int numEpisodes = 1000;
-        // create new Model from random noise
-        this.model = new Model();
+        this.reset();
+
+        // init starting conditions
+        this.model.init();
+        this.treePane.getChildren().addAll(this.model.getTrees());
 
 
-        while(this.model.currentEpisode.get() % deltaTime == 0){
-            this.model.update();
-        }
+        Thread timer = new Thread(() -> {
+            int numE = 10;
+            int cur = 1;
 
-        // extract information?
+            while(numE > cur++){
+                Platform.runLater(() -> Model.getInstance().update());
+                try{
+                    Thread.sleep(1000);
+                }catch (InterruptedException ie){
+                    ie.printStackTrace();
+                }
+            }
+
+        });
+        timer.setDaemon(true);
+        timer.start();
+    }
+
+    @FXML
+    public void onResetButtonPressed(ActionEvent actionEvent) {
+        this.reset();
     }
 
     @FXML
     public void initialize(){
+        this.model = Model.getInstance();
 
+        // on list element added
     }
+
+    private void reset(){
+        // reset all objects in pane, reset all default values for sliders etc.
+        this.treePane.getChildren().clear();
+        this.rainSlider.setValue(50d);
+
+
+        // reset underlying model
+        this.model.reset();
+    }
+
+
 }
