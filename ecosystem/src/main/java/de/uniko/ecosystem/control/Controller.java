@@ -46,7 +46,7 @@ public class Controller {
         // init starting conditions
         this.model.init();
 
-        this.timer = new PauseTransition(Duration.millis(1000));
+        this.timer = new PauseTransition(Duration.millis(100));
 
         this.timer.setOnFinished( (e) -> {
             this.model.update();
@@ -81,7 +81,6 @@ public class Controller {
     public void initialize(){
         this.model = Model.getInstance();
         this.model.getTreeList().addListener(this::onTreeListChange);
-        // on list element added
     }
 
     private void reset(){
@@ -106,7 +105,7 @@ public class Controller {
 
     @FXML
     public void export(ActionEvent actionEvent) {
-        String path = this.exportPathTextField == null ? "result.csv" : this.exportPathTextField.getText() + ".csv";
+        String path = this.exportPathTextField.getText() == null ? "result.csv" : this.exportPathTextField.getText() + ".csv";
         this.model.export(path);
     }
 }

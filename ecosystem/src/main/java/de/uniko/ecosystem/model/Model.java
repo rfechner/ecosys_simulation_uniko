@@ -3,8 +3,10 @@ package de.uniko.ecosystem.model;
 import de.uniko.ecosystem.model.data.DataSet;
 import de.uniko.ecosystem.model.data.listener.Listener;
 import de.uniko.ecosystem.model.data.listener.TreeCountListener;
+import de.uniko.ecosystem.model.data.listener.TreeVolumeListener;
 import de.uniko.ecosystem.model.trees.Spruce;
 import de.uniko.ecosystem.model.trees.Tree;
+import de.uniko.ecosystem.util.DistPair;
 import de.uniko.ecosystem.util.PerlinNoise;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,6 +27,8 @@ public class Model implements Serializable {
     private final transient List<Tree> addBuffer = new ArrayList<>();
     private final transient List<Tree> removeBuffer = new ArrayList<>();
     private final transient HashMap<Class<? extends Tree>, Integer> treeCountMap = new HashMap<>();
+    private final transient HashMap<Class<? extends Tree>, Double> treeVolumeMap = new HashMap<>();
+
     private DataSet dataSet;
 
 
@@ -42,13 +46,12 @@ public class Model implements Serializable {
         return instance;
     }
 
-
+    /** 1) add new trees (those spawned in last episode)
+     *  2) delete dead trees (those that died in the last episode)
+     *  3) update all trees
+     *  4) store info for current episode
+     */
     public void update(){
-
-        // update every updatable object
-        for (Tree tree : this.trees){
-            tree.update();
-        }
 
         // add new trees to tree list
         this.trees.addAll(this.addBuffer);
@@ -56,7 +59,24 @@ public class Model implements Serializable {
 
         // remove any dead trees from list
         this.trees.removeAll(this.removeBuffer);
+
+        // for each tree that should be removed, loop over all neighbors of
+        // this specific tree and remove it from the neighbor list.
+        for(Tree tree : removeBuffer){
+            for(DistPair dp : tree.getNeighbors()){
+                dp.other.removeNeighbor(tree);
+            }
+        }
+
+        // finally, delete objects from list
+        this.trees.removeAll(removeBuffer);
+
         this.removeBuffer.clear();
+
+        // update every updatable object
+        for (Tree tree : this.trees){
+            tree.update();
+        }
 
         // only now allow the Listeners to readout the values.
         this.dataSet.update();
@@ -68,13 +88,26 @@ public class Model implements Serializable {
 
         //incerements the tree counter
         this.treeCountMap.put(newTree.getClass(), this.treeCountMap.getOrDefault(newTree.getClass(), 0) + 1);
+        this.treeVolumeMap.put(newTree.getClass(), this.treeVolumeMap.getOrDefault(newTree.getClass(), 0d) + newTree.getVolume());
     }
 
     public void removeTree(Tree deadTree){
         this.removeBuffer.add(deadTree);
 
         //decrements the tree counter
-        this.treeCountMap.put(deadTree.getClass(), this.treeCountMap.getOrDefault(deadTree.getClass(), 1) - 1);
+        this.treeCountMap.put(deadTree.getClass(), this.treeCountMap.get(deadTree.getClass()) - 1);
+        if(this.treeCountMap.get(deadTree.getClass()) < 0){
+            throw new IllegalStateException("removing a tree resulted in faulty behaviour. The total count of class "+deadTree.getClass()+
+                    "was negative.");
+        }
+
+        // remove volume of tree class from map.
+        this.treeVolumeMap.put(deadTree.getClass(), this.treeVolumeMap.get(deadTree.getClass()) - deadTree.getVolume());
+        if(this.treeVolumeMap.get(deadTree.getClass()) < 0){
+            throw new IllegalStateException("removing a tree resulted in faulty behaviour. The total volume of class "+deadTree.getClass()+
+                    "was negative.");
+        }
+
     }
 
     public ObservableList<Tree> getTrees(){
@@ -85,6 +118,7 @@ public class Model implements Serializable {
         //TODO: remove with version 1.0 -> extract to function call
         List<Listener> tmplist = new ArrayList<>();
         tmplist.add(new TreeCountListener(Spruce.class));
+        tmplist.add(new TreeVolumeListener(Spruce.class));
         this.dataSet = new DataSet(tmplist);
 
 
@@ -118,16 +152,7 @@ public class Model implements Serializable {
     }
 
     public Double getVolumeForClass(Class<? extends Tree> cls){
-        double result = 0d;
-
-        //TODO: replace with less naive implementation
-        for(Tree t : this.trees){
-            if(t.getClass().equals(cls)){
-                result += t.getVolume();
-            }
-        }
-
-        return result;
+        return this.treeVolumeMap.getOrDefault(cls, 0d);
     }
 
     public void export(String path){
@@ -139,6 +164,8 @@ public class Model implements Serializable {
         return this.trees;
     }
 
-
+    public void updateVolumeForClass(Class<? extends Tree> cls, double newValue){
+        this.treeVolumeMap.put(cls, newValue - this.treeVolumeMap.get(cls));
+    }
 
 }

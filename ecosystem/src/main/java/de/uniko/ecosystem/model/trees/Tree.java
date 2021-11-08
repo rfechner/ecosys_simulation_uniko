@@ -1,7 +1,7 @@
 package de.uniko.ecosystem.model.trees;
 
 import de.uniko.ecosystem.model.Model;
-import de.uniko.ecosystem.util.Pair;
+import de.uniko.ecosystem.util.DistPair;
 import javafx.scene.shape.Rectangle;
 
 import java.io.Serializable;
@@ -15,7 +15,7 @@ public abstract class Tree extends Rectangle implements Serializable {
     // the idea being that constanty performing euclidean distance check to
     // find the neighbors is too expensive. Once a tree is created, it should inform all
     // neighbors about its existance. The list keeps track of trees and their corresponding distances.
-    List<Pair<Tree, Double>> neighbors = new ArrayList<>();
+    List<DistPair> neighbors = new ArrayList<>();
 
     // threshhold
     private static final int THRESHOLD = 10;
@@ -35,17 +35,22 @@ public abstract class Tree extends Rectangle implements Serializable {
         this.setImagePattern();
 
         // update neighbors for this and all other trees.
-        this.informNeighbors();
+        this.introduceToNeighbors();
     }
 
 
-    private void informNeighbors(){
-        for(Tree other : Model.getInstance().getTrees()){
-            double distance = this.distance(other);
+    private void introduceToNeighbors(){
 
+        for(Tree other : Model.getInstance().getTrees()){
+
+            double distance = this.distance(other);
+            if(distance == 0){
+                Model.getInstance().removeTree(this);
+                break;
+            }
             if(distance <= THRESHOLD){
-                other.neighbors.add(new Pair<Tree,Double>(this, distance));
-                this.neighbors.add(new Pair<Tree,Double>(other, distance));
+                other.neighbors.add(new DistPair(this, distance));
+                this.neighbors.add(new DistPair(other, distance));
             }
         }
     }
@@ -73,13 +78,26 @@ public abstract class Tree extends Rectangle implements Serializable {
 
     public abstract void setImagePattern();
 
-    public abstract void update();
+    public final void update(){
+        treeSpecificUpdate();
+        Model.getInstance().updateVolumeForClass(this.getClass(), this.getVolume());
+    }
+
+    public abstract void treeSpecificUpdate();
 
     public abstract void createOffspring();
 
-    public float getVolume(){
-        throw new RuntimeException("not yet implemented!");
+    public double getVolume(){
+        return 0d;
     }
 
+    public void removeNeighbor(Tree other){
+        DistPair dummy = new DistPair(other, 0d);
+        this.neighbors.remove(dummy);
+    }
+
+    public List<DistPair> getNeighbors(){
+        return this.neighbors;
+    }
 
 }
