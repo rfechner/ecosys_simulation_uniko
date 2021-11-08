@@ -23,6 +23,9 @@ public abstract class Tree extends Rectangle implements Serializable {
     int health;
     int age;
 
+    // diameter at breast height
+    double diameter;
+
     protected Tree(int xpos, int ypos){
         super(xpos, ypos, START_SIZE, START_SIZE);
         this.health = 100;
@@ -73,4 +76,10 @@ public abstract class Tree extends Rectangle implements Serializable {
     public abstract void update();
 
     public abstract void createOffspring();
+
+    public float getVolume(){
+        throw new RuntimeException("not yet implemented!");
+    }
+
+
 }

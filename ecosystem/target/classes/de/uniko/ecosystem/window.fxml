@@ -23,6 +23,12 @@
                            <font>
                               <Font name="Calibri Light" size="21.0" />
                            </font></Button>
+                        <HBox prefHeight="37.0" prefWidth="175.0">
+                           <children>
+                              <Button fx:id="exportButton" onAction="#export" disable="true" mnemonicParsing="false" prefHeight="39.0" prefWidth="65.0" text="export" />
+                              <TextField fx:id="exportPathTextField" disable="true" prefHeight="37.0" prefWidth="109.0" promptText="filename" />
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                </children>

@@ -1,0 +1,10 @@
+
+[	java:S112Q"FDefine and throw a dedicated exception instead of using a generic one.(´Äƒ
+F
+java:S1948"+Make "neighbors" transient or serializable.(Á–ÀÚüÿÿÿÿ
+o
+java:S2293/"YReplace the type specification in this constructor call with the diamond operator ("<>").(¯„ï°
+o
+java:S22930"YReplace the type specification in this constructor call with the diamond operator ("<>").(¼Şˆ
+f
+java:S13018"KReplace this "switch" statement by "if" statements to increase readability.(¢şğàüÿÿÿÿ

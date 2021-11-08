@@ -20,7 +20,7 @@ public class Spruce extends Tree {
 
     @Override
     public void update() {
-        
+
         // simple growth function for testing purposes
         if(random.nextDouble() > 0.9){
             this.setWidth(this.getWidth() + 1);
