@@ -1,0 +1,45 @@
+deathChance:
+
+1-0.02^(1/AGE_max)
+
+D(t) - D(t-1) > 0.01(cm)
+
+dc_maple  = 1-0.02^(1/200)
+dc_beech  = 1-0.02^(1/300)
+dc_fir    = 1-0.02^(1/80)
+dc_spruce = 1-0.02^(1/350)
+dc_birch  = 1-0.02^(1/80)
+
+if D(t) - D(t-1) < 0.01(cm) for 3 consecutive years
+
+deathChance = 1-0.01^(1/10)
+
+
+dead trees take up to 7 years to decompose (berücksichtigen?)
+
+
+Initialzustand:
+
+- Abstand:
+
+Normalverteilung mit Erwartungswert 3(m) und Standardabweichung 0.5
+Keine Werte unter 1m zulassen.(?) 
+
+- Höhe aus Alter:
+
+h = G_Baumart * Alter
+
+G = Durchnittswachstum pro Jahr unter besten Bedingungen (cm)
+Dadurch sind jung Bäume zu groß und mittelalte Bäume zu klein, aber die relativen Höhen zwischen den Baumarten sollte in fast allen Fällen stimmen.
+
+G_tree = H_max/AGE_max 
+
+G_maple  = 3011/200
+G_beech  = 133/15
+G_fir    = 183/8
+G_spruce = 183/35
+G_birch  = 183/8
+
+Diameter aus h
+
+D = b1_tree/2*b2_tree - sqrt((b1_tree/2*b2_tree)^2-((h-137)/b2_tree))
