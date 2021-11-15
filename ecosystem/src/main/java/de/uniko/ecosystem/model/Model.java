@@ -208,8 +208,8 @@ public class Model implements Serializable {
         this.tempStd = tempStd;
 
         int xOffset = 20; // draw 20 pixels more because of split screen border
-        int width = 400;
-        int height = 400;
+        int width = 800;
+        int height = 800;
 
         // idea: create perlin noise once, then let user decide parameters for terrain formation.
         for (int x = 0; x < width + xOffset; x+=4) {
