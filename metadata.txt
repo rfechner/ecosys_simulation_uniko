@@ -1,0 +1,8 @@
+Simulation1:
+Simuliert wird ein normaler Mischwald, bei einem normalverteilten jährlichen Regenfall von mu=700mm, sigma=50mm und einer normalverteilten Temperatur mit mu=10°C, sigma=1°C
+
+Simulation2:
+Simuliert wird ein normaler Mischwald, bei einem normalverteilten jährlichen Regenfall von mu=500mm, sigma=100mm und einer normalverteilten Temperatur mit mu=f(t), sigma=1.5°C,
+wobei f(t) = 10 + 5/500*t. Hier ist t die derzeitige episode.
+
+

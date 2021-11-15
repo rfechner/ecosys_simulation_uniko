@@ -8,12 +8,12 @@ import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 public class Controller {
+
 
     private Model model;
     private PauseTransition timer;
@@ -25,9 +25,6 @@ public class Controller {
 
     @FXML
     public Button startButton;
-
-    @FXML
-    public Slider rainSlider;
 
     @FXML
     public Pane treePane;
@@ -45,21 +42,31 @@ public class Controller {
     public TextField tempStdTextField;
 
     @FXML
+    public TextField apMeanTextField;
+
+    @FXML
+    public TextField apStdTextField;
+
+    @FXML
     public void startSimulationButtonPressed(){
         this.startButton.setDisable(true);
         //query number of episodes to play
-        this.numberOfEpisodes = (int)1e3;
+        this.numberOfEpisodes = (int)500;
         this.currentEpisode = 1;
 
         WIDTH = (int)this.treePane.getWidth();
         HEIGHT = (int)this.treePane.getHeight();
 
-        double ap = this.rainSlider.getValue();
+        // get user input values
         double tempMean = this.tempMeanTextField.getText().isEmpty() ? 10d : Double.parseDouble(this.tempMeanTextField.getText().replace(",", "."));
         double tempStd = this.tempStdTextField.getText().isEmpty() ? 1d : Double.parseDouble(this.tempStdTextField.getText().replace(",", "."));
 
+        double apMean = this.apMeanTextField.getText().isEmpty() ? 700d : Double.parseDouble(this.apMeanTextField.getText().replace(",", "."));
+        double apStd = this.apStdTextField.getText().isEmpty() ? 50d : Double.parseDouble(this.apStdTextField.getText().replace(",", "."));
+
+
         // init starting conditions
-        this.model.init(ap, tempMean, tempStd);
+        this.model.init(apMean, apStd, tempMean, tempStd);
 
 
 
@@ -108,11 +115,12 @@ public class Controller {
 
         // reset all objects in pane, reset all default values for sliders etc.
         this.treePane.getChildren().clear();
-        this.rainSlider.setValue(0d);
         this.exportPathTextField.setDisable(true);
         this.exportButton.setDisable(true);
         this.tempMeanTextField.clear();
         this.tempStdTextField.clear();
+        this.apMeanTextField.clear();
+        this.apStdTextField.clear();
 
         // reset underlying model
         this.model.reset();
@@ -130,5 +138,4 @@ public class Controller {
 
         this.model.export(directory + filename);
     }
-
 }

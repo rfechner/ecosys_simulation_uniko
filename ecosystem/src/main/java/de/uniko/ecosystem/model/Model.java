@@ -42,8 +42,8 @@ public class Model implements Serializable {
 
     private double annualPercipitation;
     private double avgTemp;
-    private double tempMean;
-    private double tempStd;
+
+    private double apMean, apStd, tempMean, tempStd;
 
 
     private final transient SpriteHandler spriteHandler = new SpriteHandler();
@@ -71,6 +71,10 @@ public class Model implements Serializable {
         return instance;
     }
 
+    private double linearfunction(double episode){
+        return 10d + 5d/500*episode;
+    }
+
     /** 1) add offspring
      *  2) delete dead trees (those that died in the last episode)
      *  3) update all trees
@@ -81,6 +85,9 @@ public class Model implements Serializable {
 
         // calculate average Temperature for this episode.
         this.avgTemp = random.nextGaussian()*this.tempStd + this.tempMean;
+
+        // calculate annual Percipitation for this episode.
+        this.annualPercipitation = random.nextGaussian()*this.apStd + this.apMean;
 
         offspring();
 
@@ -201,9 +208,11 @@ public class Model implements Serializable {
         return this.trees;
     }
 
-    public void init(double ap, double tempMean, double tempStd){
+    public void init(double apMean, double apStd, double tempMean, double tempStd){
 
-        this.annualPercipitation = ap;
+        this.apMean = apMean;
+        this.apStd = apStd;
+
         this.tempMean = tempMean;
         this.tempStd = tempStd;
 
