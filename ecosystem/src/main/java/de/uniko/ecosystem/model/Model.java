@@ -23,16 +23,23 @@ public class Model implements Serializable {
     private static Model instance;
     private static final Random random = new Random();
 
+
+
     private final ObservableList<Tree> trees = FXCollections.observableArrayList(new ArrayList<>());
     private final transient List<Tree> addBuffer = new ArrayList<>();
     private final transient List<Tree> removeBuffer = new ArrayList<>();
     private final transient HashMap<Class<? extends Tree>, Integer> treeCountMap = new HashMap<>();
     private final transient HashMap<Class<? extends Tree>, Double> treeVolumeMap = new HashMap<>();
     private final transient ArrayList<Class<? extends Tree>> treeClasses = new ArrayList<>();
+
+
+
+    private int currentEpisode = 0;
+    private final double ERROR_TOLERANCE = 1e-2;
+
     private DataSet dataSet;
 
-    private double ap;
-
+    private double annualPercipitation;
     private double avgTemp;
     private double tempMean;
     private double tempStd;
@@ -69,6 +76,7 @@ public class Model implements Serializable {
      *  4) store info for current episode
      */
     public void update(){
+        this.currentEpisode ++;
 
         // calculate average Temperature for this episode.
         this.avgTemp = random.nextGaussian()*this.tempStd + this.tempMean;
@@ -120,14 +128,17 @@ public class Model implements Serializable {
         this.treeCountMap.put(deadTree.getClass(), this.treeCountMap.get(deadTree.getClass()) - 1);
         if(this.treeCountMap.get(deadTree.getClass()) < 0){
             throw new IllegalStateException("removing a tree resulted in faulty behaviour. The total count of class "+deadTree.getClass()+
-                    "was negative.");
+                    "was negative :" + this.treeCountMap.get(deadTree.getClass()));
         }
 
         // remove volume of tree class from map.
         this.updateVolumeForClass(deadTree.getClass(), deadTree.getVolume()*-1d);
-        if(this.treeVolumeMap.get(deadTree.getClass()) < 0){
+
+        // minor errors in volume can occur, when removing the volume of the last tree of
+        // a species.
+        if(this.treeVolumeMap.get(deadTree.getClass()) < 0 && -this.treeVolumeMap.get(deadTree.getClass()) > ERROR_TOLERANCE){
             throw new IllegalStateException("removing a tree resulted in faulty behaviour. The total volume of class "+deadTree.getClass()+
-                    "was negative.");
+                    "was negative :" +this.treeVolumeMap.get(deadTree.getClass()));
         }
 
     }
@@ -138,7 +149,7 @@ public class Model implements Serializable {
 
     public void init(double ap, double tempMean, double tempStd){
 
-        this.ap = ap;
+        this.annualPercipitation = ap;
         this.tempMean = tempMean;
         this.tempStd = tempStd;
 
@@ -163,6 +174,7 @@ public class Model implements Serializable {
     }
 
     public void reset(){
+        this.currentEpisode = 0;
         this.removeBuffer.clear();
         this.addBuffer.clear();
         this.trees.clear();
@@ -198,7 +210,7 @@ public class Model implements Serializable {
     }
 
     public double getAP(){
-        return this.ap;
+        return this.annualPercipitation;
     }
 
     public Pair<Class<? extends Tree>, Integer> getTreeFromDistribution(){
@@ -242,6 +254,10 @@ public class Model implements Serializable {
         }
 
         return new Pair<>(cls ,age);
+    }
+
+    public int getEpisode(){
+        return this.currentEpisode;
     }
 
 }

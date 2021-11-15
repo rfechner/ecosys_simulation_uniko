@@ -24,6 +24,7 @@ public abstract class Tree extends Rectangle implements Serializable {
 
     // diameter at breast height
     double diameter;
+    int badYearCounter = 0;
 
     // total height of tree
     double height, volume;
@@ -32,10 +33,7 @@ public abstract class Tree extends Rectangle implements Serializable {
     protected Tree(int xpos, int ypos, int age){
         super(xpos, ypos, START_SIZE, START_SIZE);
 
-        // initial values are calculated
-        this.height = growthFactor() * age;
-        this.diameter = b1() / 2*b2() - Math.sqrt(Math.pow((b1() / 2*b2()), 2) - ((this.height - b1()) / b2()));
-
+        this.initialize(age);
         this.volume = this.height * this.diameter*this.diameter*0.25f*PI;
         this.leafArea = c()*this.diameter*this.diameter;
         this.setWidth(diameter / RENDER_SCALE);
@@ -110,17 +108,44 @@ public abstract class Tree extends Rectangle implements Serializable {
 
         this.leafArea = c()*this.diameter*this.diameter;
 
-        this.diameter += 0.5f*(firstDerivative(this.diameter) + firstDerivative( this.diameter + firstDerivative(this.diameter)));
+        double delta_diameter = 0.5f*(firstDerivative(this.diameter, false) + firstDerivative( this.diameter + firstDerivative(this.diameter, false), false));
 
-
+        this.diameter += delta_diameter;
 
         // scaled to reasonable size, for rendering
         this.setWidth(this.diameter / RENDER_SCALE);
         this.setHeight(this.diameter / RENDER_SCALE);
 
+        // if the increase in diameter isn't high enough,
+        // we model the current year as a bad year.
+        // The more consecutive bad years a tree has, the higher its
+        // chances of dying.
+        if(delta_diameter < 0.01){
+            this.badYearCounter ++;
+        } else {
+            this.badYearCounter = Math.max(this.badYearCounter - 2, 0);
+        }
+
+        // if there are many consecutive bad years, we can assume
+        // with a chance of (1 - exp(-0.01 * badYearCounter)) that
+        // the tree dies
+        if(Math.random() > Math.exp(-0.001 * badYearCounter)){
+            Model.getInstance().removeTree(this);
+        }
+
     }
 
-    public double firstDerivative(double D){
+    public void initialize(int age){
+        this.diameter = 5;
+
+        // run update() with no penalty
+        for(int i = 0; i < age; i++){
+            this.height = b1() + b2()*this.diameter - b3()*this.diameter*this.diameter;
+            this.diameter += 0.5f*(firstDerivative(this.diameter, true) + firstDerivative( this.diameter + firstDerivative(this.diameter, true), true));
+        }
+    }
+
+    public double firstDerivative(double D, boolean init){
 
 
         double denominator = (274 + 3*b2()*D - 4*b3()*D*D);
@@ -137,7 +162,7 @@ public abstract class Tree extends Rectangle implements Serializable {
         }
 
         return growthFactor() * D *
-                (1 - this.height*D*d1())/denominator * lightPenalty()*waterPenalty()*temperaturePenalty();
+                (1 - this.height*D*d1())/denominator * (init ? 1 : lightPenalty()*waterPenalty()*temperaturePenalty());
     }
 
     public double getVolume(){

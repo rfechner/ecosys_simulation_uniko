@@ -13,8 +13,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
-import java.util.Date;
-
 public class Controller {
 
     private Model model;
@@ -57,7 +55,7 @@ public class Controller {
         // init starting conditions
         this.model.init(ap, tempMean, tempStd);
 
-        this.timer = new PauseTransition(Duration.millis(0));
+        this.timer = new PauseTransition(Duration.millis(10));
 
         this.timer.setOnFinished( (e) -> {
             this.model.update();
@@ -124,4 +122,5 @@ public class Controller {
 
         this.model.export(directory + filename);
     }
+
 }
