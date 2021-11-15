@@ -15,7 +15,7 @@ public abstract class Tree extends Rectangle implements Serializable {
     List<DistPair> neighbors = new ArrayList<>();
 
     // threshhold
-    private static final int THRESHOLD = 30;
+    public static final int THRESHOLD = 30;
     private static final float coef1 = -1f / 5062500;
     private static final float coef2 = 11f / 10125;
     private static final float const1 = -40f / 81;

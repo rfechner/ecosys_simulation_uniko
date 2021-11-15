@@ -132,8 +132,15 @@ public class Model implements Serializable {
                 // cannot spawn tree on position which is already taken
                 while(0 < tries--){
 
-                    double x = Math.max(0, Math.min(random.nextGaussian()*15 + tmp.getX(), Controller.WIDTH));
-                    double y = Math.max(0, Math.min(random.nextGaussian()*15 + tmp.getY(), Controller.HEIGHT));
+                    double x = Math.max(0, Math.min(random.nextGaussian()*20 + tmp.getX(), Controller.WIDTH));
+                    double y = Math.max(0, Math.min(random.nextGaussian()*20 + tmp.getY(), Controller.HEIGHT));
+
+                    // we cannot prevent collision with another tree out of the radius
+                    // of the threshold around the tree tmp.
+                    if(tmp.distance(x,y) >  Tree.THRESHOLD){
+                        continue;
+                    }
+
                     boolean positionOkay = true;
                     for(DistPair pair : tmp.getNeighbors()){
                         if(pair.other.distance(x,y) < 1){
