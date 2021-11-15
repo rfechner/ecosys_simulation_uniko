@@ -2,8 +2,8 @@ package de.uniko.ecosystem.model.trees;
 
 import javafx.scene.paint.Color;
 
-public class Spruce extends Tree {
-
+@Deprecated
+public class Oak extends Tree{
     private static final int HMAX = 1830;
     private static final int DMAX = 50;
     private static final float c = 2.5f/ 10000;
@@ -15,13 +15,14 @@ public class Spruce extends Tree {
 
 
 
-    protected Spruce(int xpos, int ypos, int age) {
+
+    protected Oak(int xpos, int ypos, int age) {
         super(xpos, ypos, age);
     }
 
     @Override
     public void setImagePattern() {
-        this.setFill(Color.GREEN);
+        this.setFill(Color.YELLOW);
     }
 
 
@@ -63,5 +64,4 @@ public class Spruce extends Tree {
     public float growthFactor() {
         return growthFactor;
     }
-
 }

@@ -17,15 +17,22 @@
                               <Font name="Calibri Light" size="21.0" />
                            </font>
                         </Button>
-                        <Label prefHeight="26.0" prefWidth="174.0" text="rain probability" />
-                        <Slider fx:id="rainSlider" blockIncrement="1.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                        <Label prefHeight="26.0" prefWidth="174.0" text="AP [mm]" />
+                        <Slider fx:id="rainSlider" blockIncrement="1.0" majorTickUnit="250.0" max="1000.0" minorTickCount="50" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                        <Label text="Temperature °C" />
+                        <HBox prefHeight="28.0" prefWidth="175.0">
+                           <children>
+                              <TextField fx:id="tempMeanTextField" promptText="MEAN °C" />
+                              <TextField fx:id="tempStdTextField" promptText="STD °C" />
+                           </children>
+                        </HBox>
                         <Button fx:id="resetButton" mnemonicParsing="false" onAction="#onResetButtonPressed" prefHeight="31.0" prefWidth="176.0" text="reset">
                            <font>
                               <Font name="Calibri Light" size="21.0" />
                            </font></Button>
                         <HBox prefHeight="37.0" prefWidth="175.0">
                            <children>
-                              <Button fx:id="exportButton" onAction="#export" disable="true" mnemonicParsing="false" prefHeight="39.0" prefWidth="65.0" text="export" />
+                              <Button fx:id="exportButton" disable="true" mnemonicParsing="false" onAction="#export" prefHeight="39.0" prefWidth="65.0" text="export" />
                               <TextField fx:id="exportPathTextField" disable="true" prefHeight="37.0" prefWidth="109.0" promptText="filename" />
                            </children>
                         </HBox>

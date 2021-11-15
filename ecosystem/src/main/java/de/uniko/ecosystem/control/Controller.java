@@ -13,6 +13,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
+import java.util.Date;
+
 public class Controller {
 
     private Model model;
@@ -35,18 +37,27 @@ public class Controller {
     @FXML
     public TextField exportPathTextField;
 
+    @FXML
+    public TextField tempMeanTextField;
+
+    @FXML
+    public TextField tempStdTextField;
 
     @FXML
     public void startSimulationButtonPressed(){
-
+        this.startButton.setDisable(true);
         //query number of episodes to play
-        this.numberOfEpisodes = 10;
+        this.numberOfEpisodes = (int)1e3;
         this.currentEpisode = 1;
 
-        // init starting conditions
-        this.model.init();
+        double ap = this.rainSlider.getValue();
+        double tempMean = this.tempMeanTextField.getText() == null ? 10d : Double.parseDouble(this.tempMeanTextField.getText());
+        double tempStd = this.tempStdTextField.getText() == null ? 1d : Double.parseDouble(this.tempStdTextField.getText());
 
-        this.timer = new PauseTransition(Duration.millis(100));
+        // init starting conditions
+        this.model.init(ap, tempMean, tempStd);
+
+        this.timer = new PauseTransition(Duration.millis(0));
 
         this.timer.setOnFinished( (e) -> {
             this.model.update();
@@ -75,6 +86,7 @@ public class Controller {
     @FXML
     public void onResetButtonPressed(ActionEvent actionEvent) {
         this.reset();
+        this.startButton.setDisable(false);
     }
 
     @FXML
@@ -90,9 +102,11 @@ public class Controller {
 
         // reset all objects in pane, reset all default values for sliders etc.
         this.treePane.getChildren().clear();
-        this.rainSlider.setValue(50d);
+        this.rainSlider.setValue(0d);
         this.exportPathTextField.setDisable(true);
         this.exportButton.setDisable(true);
+        this.tempMeanTextField.clear();
+        this.tempStdTextField.clear();
 
         // reset underlying model
         this.model.reset();
@@ -105,7 +119,9 @@ public class Controller {
 
     @FXML
     public void export(ActionEvent actionEvent) {
-        String path = this.exportPathTextField.getText() == null ? "result.csv" : this.exportPathTextField.getText() + ".csv";
-        this.model.export(path);
+        String directory = "";
+        String filename = this.exportPathTextField.getText() == null ? "result.csv" : this.exportPathTextField.getText() + ".csv";
+
+        this.model.export(directory + filename);
     }
 }

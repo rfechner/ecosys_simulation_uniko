@@ -2,26 +2,26 @@ package de.uniko.ecosystem.model.trees;
 
 import javafx.scene.paint.Color;
 
-public class Spruce extends Tree {
-
-    private static final int HMAX = 1830;
-    private static final int DMAX = 50;
-    private static final float c = 2.5f/ 10000;
+public class Beech extends Tree{
+    private static final int HMAX = 2660;
+    private static final int DMAX = 122;
+    private static final float c = 2.2f/ 10000;
     private static final float b1 = 137f;
     private static final float b2 = 2f*(HMAX - b1) / DMAX;
     private static final float b3 = (HMAX-b1) / (DMAX*DMAX);
     private static final float d1 = 1f / (DMAX*HMAX);
-    private static final float growthFactor = 100f;
+    private static final float growthFactor = 150f;
 
 
 
-    protected Spruce(int xpos, int ypos, int age) {
+
+    protected Beech(int xpos, int ypos, int age) {
         super(xpos, ypos, age);
     }
 
     @Override
     public void setImagePattern() {
-        this.setFill(Color.GREEN);
+        this.setFill(Color.RED);
     }
 
 
@@ -63,5 +63,4 @@ public class Spruce extends Tree {
     public float growthFactor() {
         return growthFactor;
     }
-
 }

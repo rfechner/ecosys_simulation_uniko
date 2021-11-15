@@ -4,9 +4,9 @@ import de.uniko.ecosystem.model.data.DataSet;
 import de.uniko.ecosystem.model.data.listener.Listener;
 import de.uniko.ecosystem.model.data.listener.TreeCountListener;
 import de.uniko.ecosystem.model.data.listener.TreeVolumeListener;
-import de.uniko.ecosystem.model.trees.Spruce;
-import de.uniko.ecosystem.model.trees.Tree;
+import de.uniko.ecosystem.model.trees.*;
 import de.uniko.ecosystem.util.DistPair;
+import de.uniko.ecosystem.util.Pair;
 import de.uniko.ecosystem.util.PerlinNoise;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,14 +28,31 @@ public class Model implements Serializable {
     private final transient List<Tree> removeBuffer = new ArrayList<>();
     private final transient HashMap<Class<? extends Tree>, Integer> treeCountMap = new HashMap<>();
     private final transient HashMap<Class<? extends Tree>, Double> treeVolumeMap = new HashMap<>();
-
+    private final transient ArrayList<Class<? extends Tree>> treeClasses = new ArrayList<>();
     private DataSet dataSet;
+
+    private double ap;
+
+    private double avgTemp;
+    private double tempMean;
+    private double tempStd;
 
 
     private final transient SpriteHandler spriteHandler = new SpriteHandler();
 
     private Model(){
+        this.treeClasses.add(Spruce.class);
+        this.treeClasses.add(Fir.class);
+        this.treeClasses.add(Beech.class);
 
+        List<Listener> tmplist = new ArrayList<>();
+
+        for(Class<? extends Tree> cls : this.treeClasses){
+            tmplist.add(new TreeCountListener(cls));
+            tmplist.add(new TreeVolumeListener(cls));
+        }
+
+        this.dataSet = new DataSet(tmplist);
     }
 
     public static Model getInstance(){
@@ -52,6 +69,9 @@ public class Model implements Serializable {
      *  4) store info for current episode
      */
     public void update(){
+
+        // calculate average Temperature for this episode.
+        this.avgTemp = random.nextGaussian()*this.tempStd + this.tempMean;
 
         // add new trees to tree list
         this.trees.addAll(this.addBuffer);
@@ -78,6 +98,8 @@ public class Model implements Serializable {
             tree.update();
         }
 
+
+
         // only now allow the Listeners to readout the values.
         this.dataSet.update();
     }
@@ -102,7 +124,7 @@ public class Model implements Serializable {
         }
 
         // remove volume of tree class from map.
-        this.treeVolumeMap.put(deadTree.getClass(), this.treeVolumeMap.get(deadTree.getClass()) - deadTree.getVolume());
+        this.updateVolumeForClass(deadTree.getClass(), deadTree.getVolume()*-1d);
         if(this.treeVolumeMap.get(deadTree.getClass()) < 0){
             throw new IllegalStateException("removing a tree resulted in faulty behaviour. The total volume of class "+deadTree.getClass()+
                     "was negative.");
@@ -114,13 +136,11 @@ public class Model implements Serializable {
         return this.trees;
     }
 
-    public void init(){
-        //TODO: remove with version 1.0 -> extract to function call
-        List<Listener> tmplist = new ArrayList<>();
-        tmplist.add(new TreeCountListener(Spruce.class));
-        tmplist.add(new TreeVolumeListener(Spruce.class));
-        this.dataSet = new DataSet(tmplist);
+    public void init(double ap, double tempMean, double tempStd){
 
+        this.ap = ap;
+        this.tempMean = tempMean;
+        this.tempStd = tempStd;
 
         int xOffset = 20; // draw 20 pixels more because of split screen border
         int width = 400;
@@ -135,7 +155,8 @@ public class Model implements Serializable {
 
                 // 0.2 seems to be an okay-ish threshold for generating tree-groups
                 if(noiseValue > 0.1 && random.nextDouble() > 0.8){
-                    this.addTree(Tree.createTree(x,y,Spruce.class));
+                    Pair<Class<? extends Tree>, Integer>tmp = getTreeFromDistribution();
+                    this.addTree(Tree.createTree(x,y,tmp.first, tmp.second));
                 }
             }
         }
@@ -164,8 +185,63 @@ public class Model implements Serializable {
         return this.trees;
     }
 
-    public void updateVolumeForClass(Class<? extends Tree> cls, double newValue){
-        this.treeVolumeMap.put(cls, newValue - this.treeVolumeMap.get(cls));
+    public void updateVolumeForClass(Class<? extends Tree> cls, double difference){
+        this.treeVolumeMap.put(cls, this.treeVolumeMap.getOrDefault(cls, 0d) + difference);
+    }
+
+    /**
+     *
+     * @return 12 months * 30 days * difference of average temperature and base temperature
+     */
+    public double getDD(){
+        return 12 * 30 * (this.avgTemp - 4.4d);
+    }
+
+    public double getAP(){
+        return this.ap;
+    }
+
+    public Pair<Class<? extends Tree>, Integer> getTreeFromDistribution(){
+        /* distributing the probability for lesser known tree-species
+            to their nearest relative.
+        Beech: 0.652
+        Spruce: 0.206 + 0.068 = 0.274
+        Fir: 0.006 + 0.068 = 0.074
+
+         */
+        double tmp = random.nextDouble();
+        int age;
+        Class<? extends Tree> cls;
+
+        if(tmp <= 0.652){
+            cls = Beech.class;
+        } else if(tmp <= 0.926){
+            cls = Spruce.class;
+        } else{
+            cls = Fir.class;
+        }
+
+        tmp = random.nextDouble();
+
+        if(tmp <= 0.073){
+            age = random.nextInt(15) + 5;
+        } else if(tmp <= 0.219){
+            age = random.nextInt(20) + 20;
+        } else if(tmp <= 0.418) {
+            age = random.nextInt(20) + 40;
+        } else if(tmp <= 0.59){
+            age = random.nextInt(20) + 60;
+        } else if(tmp <= 0.708) {
+            age = random.nextInt(20) + 80;
+        } else if(tmp <= 0.807) {
+            age = random.nextInt( 20) + 100;
+        } else {
+            // distribute the prob for older trees onto
+            // all younger trees.
+            age = random.nextInt(50) + 5;
+        }
+
+        return new Pair<>(cls ,age);
     }
 
 }

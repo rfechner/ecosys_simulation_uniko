@@ -17,7 +17,8 @@ import java.util.List;
  *
  */
 public class DataSet {
-
+    private static final String DELIMITER = ",";
+    private static final String ENCODING = "UTF-8";
     List<String> entries = new ArrayList<>();
     List<Listener> listeners;
     StringBuilder sb = new StringBuilder();
@@ -29,12 +30,12 @@ public class DataSet {
     public void writeToCSV(String path){
 
         try{
-            PrintWriter pw = new PrintWriter(path, "UTF-8");
+            PrintWriter pw = new PrintWriter(path, ENCODING);
 
             this.sb.setLength(0);
 
             for(Listener l : this.listeners){
-                sb.append(l.getColumnId()).append(";");
+                sb.append(l.getColumnId()).append(DELIMITER);
             }
             sb.deleteCharAt(sb.length() - 1);
 
@@ -56,7 +57,7 @@ public class DataSet {
         sb.setLength(0);
 
         for(Listener l : this.listeners){
-            sb.append(l.query()).append(";");
+            sb.append(l.query()).append(DELIMITER);
         }
 
         // remove last semicolon
