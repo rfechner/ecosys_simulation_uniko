@@ -20,6 +20,9 @@ public class Controller {
     private int numberOfEpisodes;
     private int currentEpisode;
 
+    public static int WIDTH, HEIGHT;
+
+
     @FXML
     public Button startButton;
 
@@ -48,12 +51,17 @@ public class Controller {
         this.numberOfEpisodes = (int)1e3;
         this.currentEpisode = 1;
 
+        WIDTH = (int)this.treePane.getWidth();
+        HEIGHT = (int)this.treePane.getHeight();
+
         double ap = this.rainSlider.getValue();
-        double tempMean = this.tempMeanTextField.getText() == null ? 10d : Double.parseDouble(this.tempMeanTextField.getText());
-        double tempStd = this.tempStdTextField.getText() == null ? 1d : Double.parseDouble(this.tempStdTextField.getText());
+        double tempMean = this.tempMeanTextField.getText().isEmpty() ? 10d : Double.parseDouble(this.tempMeanTextField.getText().replace(",", "."));
+        double tempStd = this.tempStdTextField.getText().isEmpty() ? 1d : Double.parseDouble(this.tempStdTextField.getText().replace(",", "."));
 
         // init starting conditions
         this.model.init(ap, tempMean, tempStd);
+
+
 
         this.timer = new PauseTransition(Duration.millis(10));
 

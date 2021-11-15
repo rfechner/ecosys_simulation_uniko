@@ -15,7 +15,7 @@ public abstract class Tree extends Rectangle implements Serializable {
     List<DistPair> neighbors = new ArrayList<>();
 
     // threshhold
-    private static final int THRESHOLD = 10;
+    private static final int THRESHOLD = 30;
     private static final float coef1 = -1f / 5062500;
     private static final float coef2 = 11f / 10125;
     private static final float const1 = -40f / 81;
@@ -51,8 +51,8 @@ public abstract class Tree extends Rectangle implements Serializable {
 
         for(Tree other : Model.getInstance().getTrees()){
 
-            double distance = this.distance(other);
-            if(distance == 0){
+            double distance = this.distance(other.getX(), other.getY());
+            if(!this.equals(other) && distance == 0){
                 Model.getInstance().removeTree(this);
                 break;
             }
@@ -70,7 +70,6 @@ public abstract class Tree extends Rectangle implements Serializable {
             case "Spruce":  ret = new Spruce(xpos, ypos, age); break;
             case "Fir":     ret = new Fir(xpos, ypos, age); break;
             case "Beech":   ret = new Beech(xpos, ypos, age); break;
-            case "Oak":     ret = new Oak(xpos, ypos, age); break;
             default : throw new IllegalArgumentException(cls.getSimpleName()+" is not recognized as a class extending Tree, or" +
                     "this functionality isnt implemented yet.");
         }
@@ -80,11 +79,12 @@ public abstract class Tree extends Rectangle implements Serializable {
 
     /**
      *
-     * @param other Tree to be compared to
+     * @param otherx xpos of other tree
+     * @param othery ypos of other tree
      * @return euclidean distance to other tree
      */
-    private double distance(Tree other){
-        return Math.sqrt(Math.pow(this.getX() - other.getX(), 2) + Math.pow(this.getY() - other.getY(), 2));
+    public double distance(double otherx, double othery){
+        return Math.sqrt(Math.pow(this.getX() - otherx, 2) + Math.pow(this.getY() - othery, 2));
     }
 
     public abstract void setImagePattern();
@@ -223,6 +223,8 @@ public abstract class Tree extends Rectangle implements Serializable {
     public static double getW(double diameter){
         return diameter <= 5d ? 1 : 0.36*diameter - 0.8;
     }
+
+
 
 
 

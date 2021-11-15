@@ -1,5 +1,6 @@
 package de.uniko.ecosystem.model;
 
+import de.uniko.ecosystem.control.Controller;
 import de.uniko.ecosystem.model.data.DataSet;
 import de.uniko.ecosystem.model.data.listener.Listener;
 import de.uniko.ecosystem.model.data.listener.TreeCountListener;
@@ -26,7 +27,6 @@ public class Model implements Serializable {
 
 
     private final ObservableList<Tree> trees = FXCollections.observableArrayList(new ArrayList<>());
-    private final transient List<Tree> addBuffer = new ArrayList<>();
     private final transient List<Tree> removeBuffer = new ArrayList<>();
     private final transient HashMap<Class<? extends Tree>, Integer> treeCountMap = new HashMap<>();
     private final transient HashMap<Class<? extends Tree>, Double> treeVolumeMap = new HashMap<>();
@@ -36,6 +36,7 @@ public class Model implements Serializable {
 
     private int currentEpisode = 0;
     private final double ERROR_TOLERANCE = 1e-2;
+    private final double MAX_TREES = 1e3;
 
     private DataSet dataSet;
 
@@ -70,7 +71,7 @@ public class Model implements Serializable {
         return instance;
     }
 
-    /** 1) add new trees (those spawned in last episode)
+    /** 1) add offspring
      *  2) delete dead trees (those that died in the last episode)
      *  3) update all trees
      *  4) store info for current episode
@@ -81,12 +82,7 @@ public class Model implements Serializable {
         // calculate average Temperature for this episode.
         this.avgTemp = random.nextGaussian()*this.tempStd + this.tempMean;
 
-        // add new trees to tree list
-        this.trees.addAll(this.addBuffer);
-        this.addBuffer.clear();
-
-        // remove any dead trees from list
-        this.trees.removeAll(this.removeBuffer);
+        offspring();
 
         // for each tree that should be removed, loop over all neighbors of
         // this specific tree and remove it from the neighbor list.
@@ -96,17 +92,15 @@ public class Model implements Serializable {
             }
         }
 
-        // finally, delete objects from list
+        // delete objects from list
         this.trees.removeAll(removeBuffer);
-
         this.removeBuffer.clear();
+
 
         // update every updatable object
         for (Tree tree : this.trees){
             tree.update();
         }
-
-
 
         // only now allow the Listeners to readout the values.
         this.dataSet.update();
@@ -114,11 +108,57 @@ public class Model implements Serializable {
 
 
     public void addTree(Tree newTree){
-        this.addBuffer.add(newTree);
+        this.trees.add(newTree);
 
         //incerements the tree counter
         this.treeCountMap.put(newTree.getClass(), this.treeCountMap.getOrDefault(newTree.getClass(), 0) + 1);
         this.treeVolumeMap.put(newTree.getClass(), this.treeVolumeMap.getOrDefault(newTree.getClass(), 0d) + newTree.getVolume());
+    }
+
+    /**
+     *  in case the current year has good quality (good DD and good AP)
+     *  1 % of the current live trees will have offspring. For each sampled tree we calculate
+     *  a 2-d normally distributed point with mean=position of tree and std=10 meters.
+     *
+     *  The new tree is then added to the trees list
+     */
+    public void offspring(){
+        if(this.trees.size() < MAX_TREES && goodQualityYear()){
+            for(int i = 0; i < this.trees.size() / 100; i++){
+                Tree tmp = this.trees.get(random.nextInt(this.trees.size()));
+
+                int tries = 10;
+
+                // cannot spawn tree on position which is already taken
+                while(0 < tries--){
+
+                    double x = Math.max(0, Math.min(random.nextGaussian()*15 + tmp.getX(), Controller.WIDTH));
+                    double y = Math.max(0, Math.min(random.nextGaussian()*15 + tmp.getY(), Controller.HEIGHT));
+                    boolean positionOkay = true;
+                    for(DistPair pair : tmp.getNeighbors()){
+                        if(pair.other.distance(x,y) < 1){
+                            positionOkay = false;
+                            break;
+                        }
+                    }
+
+                    if(positionOkay){
+                        this.addTree(Tree.createTree((int)x, (int)y,tmp.getClass(), 1));
+                        break;
+                    }
+                }
+
+            }
+        }
+    }
+
+    /**
+     *
+     * @return whether the year had good rainfall and mild to hot temperatures
+     */
+    public boolean goodQualityYear(){
+        return this.annualPercipitation > 500
+                && this.avgTemp >= 8 && this.avgTemp <= 12;
     }
 
     public void removeTree(Tree deadTree){
@@ -136,9 +176,16 @@ public class Model implements Serializable {
 
         // minor errors in volume can occur, when removing the volume of the last tree of
         // a species.
-        if(this.treeVolumeMap.get(deadTree.getClass()) < 0 && -this.treeVolumeMap.get(deadTree.getClass()) > ERROR_TOLERANCE){
-            throw new IllegalStateException("removing a tree resulted in faulty behaviour. The total volume of class "+deadTree.getClass()+
-                    "was negative :" +this.treeVolumeMap.get(deadTree.getClass()));
+        if(this.treeVolumeMap.get(deadTree.getClass()) < 0){
+            if(-this.treeVolumeMap.get(deadTree.getClass()) > ERROR_TOLERANCE){
+                throw new IllegalStateException("removing a tree resulted in faulty behaviour. The total volume of class "+deadTree.getClass()+
+                        "was negative :" +this.treeVolumeMap.get(deadTree.getClass()));
+            } else {
+                // error is withing floating point number calculation error bound,
+                // clean up the error.
+                this.treeVolumeMap.put(deadTree.getClass(), 0d);
+            }
+
         }
 
     }
@@ -165,7 +212,7 @@ public class Model implements Serializable {
                 double noiseValue = PerlinNoise.noise(currentX,currentY,0);
 
                 // 0.2 seems to be an okay-ish threshold for generating tree-groups
-                if(noiseValue > 0.1 && random.nextDouble() > 0.8){
+                if(noiseValue > 0.1 && random.nextDouble() > 0.95){
                     Pair<Class<? extends Tree>, Integer>tmp = getTreeFromDistribution();
                     this.addTree(Tree.createTree(x,y,tmp.first, tmp.second));
                 }
@@ -176,7 +223,6 @@ public class Model implements Serializable {
     public void reset(){
         this.currentEpisode = 0;
         this.removeBuffer.clear();
-        this.addBuffer.clear();
         this.trees.clear();
     }
 
