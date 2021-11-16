@@ -36,7 +36,7 @@ public class Model implements Serializable {
 
     private int currentEpisode = 0;
     private final double ERROR_TOLERANCE = 1e-2;
-    private final double MAX_TREES = 1e3;
+    private final double MAX_TREES = 1e6;
 
     private DataSet dataSet;
 
@@ -131,7 +131,7 @@ public class Model implements Serializable {
      */
     public void offspring(){
         if(this.trees.size() < MAX_TREES && goodQualityYear()){
-            for(int i = 0; i < this.trees.size() / 100; i++){
+            for(int i = 0; i < this.trees.size() / 50; i++){
                 Tree tmp = this.trees.get(random.nextInt(this.trees.size()));
 
                 int tries = 10;

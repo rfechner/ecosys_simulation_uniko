@@ -127,7 +127,7 @@ public abstract class Tree extends Rectangle implements Serializable {
         }
 
         // if there are many consecutive bad years, we can assume
-        // with a chance of (1 - exp(-0.01 * badYearCounter)) that
+        // with a chance of exp(-0.001 * badYearCounter) that
         // the tree dies
         if(Math.random() > Math.exp(-0.001 * badYearCounter)){
             Model.getInstance().removeTree(this);

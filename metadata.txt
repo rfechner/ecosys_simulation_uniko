@@ -5,4 +5,21 @@ Simulation2:
 Simuliert wird ein normaler Mischwald, bei einem normalverteilten jährlichen Regenfall von mu=500mm, sigma=100mm und einer normalverteilten Temperatur mit mu=f(t), sigma=1.5°C,
 wobei f(t) = 10 + 5/500*t. Hier ist t die derzeitige episode.
 
+Lots_of_trees:
 
+maxtrees=1e6
+ap: mean=700 std=50
+temp: mean=10 std=1
+
+Extreme_weather:
+
+maxtrees=1e6
+ap: mean=500 std=300
+temp: mean=10 std=10
+
+High_rep_rate:
+
+offspring chance doubled from 1% to 2%
+maxtrees=1e6
+ap: mean=700 std=50
+temp: mean=10 std=1

@@ -51,7 +51,7 @@ public class Controller {
     public void startSimulationButtonPressed(){
         this.startButton.setDisable(true);
         //query number of episodes to play
-        this.numberOfEpisodes = (int)500;
+        this.numberOfEpisodes = (int)300;
         this.currentEpisode = 1;
 
         WIDTH = (int)this.treePane.getWidth();
@@ -70,7 +70,7 @@ public class Controller {
 
 
 
-        this.timer = new PauseTransition(Duration.millis(10));
+        this.timer = new PauseTransition(Duration.millis(0));
 
         this.timer.setOnFinished( (e) -> {
             this.model.update();
