@@ -70,7 +70,7 @@ public class Controller {
 
 
 
-        this.timer = new PauseTransition(Duration.millis(0));
+        this.timer = new PauseTransition(Duration.millis(10));
 
         this.timer.setOnFinished( (e) -> {
             this.model.update();
