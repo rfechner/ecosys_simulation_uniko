@@ -1,5 +1,6 @@
 package de.uniko.ecosystem.model.data;
 
+import de.uniko.ecosystem.model.Model;
 import de.uniko.ecosystem.model.data.listener.Listener;
 
 import java.io.*;
@@ -27,10 +28,18 @@ public class DataSet {
         this.listeners = listeners;
     }
 
+
+
     public void writeToCSV(String path){
 
         try{
             PrintWriter pw = new PrintWriter(path, ENCODING);
+
+
+            // Add meta data to csv.
+            for(String metadata : Model.getInstance().getMetaData()){
+                pw.println(metadata);
+            }
 
             this.sb.setLength(0);
 

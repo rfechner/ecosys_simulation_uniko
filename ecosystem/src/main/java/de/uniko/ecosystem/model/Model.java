@@ -14,10 +14,7 @@ import javafx.collections.ObservableList;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Model implements Serializable {
 
@@ -43,7 +40,8 @@ public class Model implements Serializable {
     private double annualPercipitation;
     private double avgTemp;
 
-    private double apMean, apStd, tempMean, tempStd;
+    private double apMean, apStd, tempMean, tempStd, offspringRate, deathChance;
+
 
 
     private final transient SpriteHandler spriteHandler = new SpriteHandler();
@@ -130,8 +128,9 @@ public class Model implements Serializable {
      *  The new tree is then added to the trees list
      */
     public void offspring(){
+        List<Tree> tree_list = new ArrayList<>();
         if(this.trees.size() < MAX_TREES && goodQualityYear()){
-            for(int i = 0; i < this.trees.size() / 50; i++){
+            for(int i = 0; i < this.trees.size() * this.offspringRate; i++){
                 Tree tmp = this.trees.get(random.nextInt(this.trees.size()));
 
                 int tries = 10;
@@ -157,11 +156,15 @@ public class Model implements Serializable {
                     }
 
                     if(positionOkay){
-                        this.addTree(Tree.createTree((int)x, (int)y,tmp.getClass(), 1));
+                        tree_list.add(Tree.createTree((int)x, (int)y,tmp.getClass(), 1));
                         break;
                     }
                 }
 
+            }
+
+            for(Tree tree : tree_list){
+                this.addTree(tree);
             }
         }
     }
@@ -208,13 +211,15 @@ public class Model implements Serializable {
         return this.trees;
     }
 
-    public void init(double apMean, double apStd, double tempMean, double tempStd){
+    public void init(double apMean, double apStd, double tempMean, double tempStd, double offspringChance, double deathChance){
 
         this.apMean = apMean;
         this.apStd = apStd;
 
         this.tempMean = tempMean;
         this.tempStd = tempStd;
+        this.deathChance = deathChance;
+        this.offspringRate = offspringChance;
 
         int xOffset = 20; // draw 20 pixels more because of split screen border
         int width = 800;
@@ -320,6 +325,25 @@ public class Model implements Serializable {
 
     public int getEpisode(){
         return this.currentEpisode;
+    }
+
+    public double getDeathChance(){
+        return this.deathChance;
+    }
+
+    public List<String> getMetaData(){
+        List<String> retlist = new ArrayList<>();
+
+        retlist.add("# date:"+new Date());
+        retlist.add("# maxtrees: "+this.MAX_TREES);
+        retlist.add("# AP mean [mm]: "+this.apMean);
+        retlist.add("# AP std [mm]: "+this.apStd);
+        retlist.add("# Temp mean [°C]: "+this.tempMean);
+        retlist.add("# Temp std: [°C]"+this.tempStd);
+        retlist.add("# deathChance [%]: "+this.deathChance);
+        retlist.add("# offspringRate [%]: "+this.offspringRate);
+
+        return retlist;
     }
 
 }

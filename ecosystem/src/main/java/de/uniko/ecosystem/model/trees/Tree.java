@@ -15,7 +15,7 @@ public abstract class Tree extends Rectangle implements Serializable {
     List<DistPair> neighbors = new ArrayList<>();
 
     // threshhold
-    public static final int THRESHOLD = 30;
+    public static int THRESHOLD = 30;
     private static final float coef1 = -1f / 5062500;
     private static final float coef2 = 11f / 10125;
     private static final float const1 = -40f / 81;
@@ -42,7 +42,6 @@ public abstract class Tree extends Rectangle implements Serializable {
         // color tree accordingly
         this.setImagePattern();
 
-        // update neighbors for this and all other trees.
         this.introduceToNeighbors();
     }
 
@@ -123,13 +122,13 @@ public abstract class Tree extends Rectangle implements Serializable {
         if(delta_diameter < 0.01){
             this.badYearCounter ++;
         } else {
-            this.badYearCounter = Math.max(this.badYearCounter - 2, 0);
+            this.badYearCounter = 0;
         }
 
-        // if there are many consecutive bad years, we can assume
-        // with a chance of exp(-0.001 * badYearCounter) that
-        // the tree dies
-        if(Math.random() > Math.exp(-0.001 * badYearCounter)){
+        double epsilon = Model.getInstance().getDeathChance();
+        double deathChance = 1 - (1 - epsilon) * (1 - 0.005*Math.pow(badYearCounter, 2));
+
+        if(Math.random() < deathChance){
             Model.getInstance().removeTree(this);
         }
 

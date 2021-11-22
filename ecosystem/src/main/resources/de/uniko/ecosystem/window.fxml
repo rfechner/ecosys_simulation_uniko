@@ -41,6 +41,18 @@
                               <TextField fx:id="tempStdTextField" promptText="STD °C" />
                            </children>
                         </HBox>
+                        <Label prefHeight="21.0" prefWidth="227.0" text="annual Deathchance (epsilon) [%]">
+                           <VBox.margin>
+                              <Insets top="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TextField fx:id="deathChanceTextField" promptText="deathchance every year" />
+                        <Label text="offspring rate [%]">
+                           <VBox.margin>
+                              <Insets top="20.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TextField fx:id="offspringRateTextField" promptText="offspring rate in case of a good year" />
                         <Button fx:id="resetButton" mnemonicParsing="false" onAction="#onResetButtonPressed" prefHeight="31.0" prefWidth="176.0" text="reset">
                            <font>
                               <Font name="Calibri Light" size="21.0" />
