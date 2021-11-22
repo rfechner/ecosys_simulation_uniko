@@ -335,13 +335,13 @@ public class Model implements Serializable {
         List<String> retlist = new ArrayList<>();
 
         retlist.add("# date:"+new Date());
-        retlist.add("# maxtrees: "+this.MAX_TREES);
-        retlist.add("# AP mean [mm]: "+this.apMean);
-        retlist.add("# AP std [mm]: "+this.apStd);
-        retlist.add("# Temp mean [°C]: "+this.tempMean);
-        retlist.add("# Temp std: [°C]"+this.tempStd);
-        retlist.add("# deathChance [%]: "+this.deathChance);
-        retlist.add("# offspringRate [%]: "+this.offspringRate);
+        retlist.add("# maxtrees:"+this.MAX_TREES);
+        retlist.add("# AP mean [mm]:"+this.apMean);
+        retlist.add("# AP std [mm]:"+this.apStd);
+        retlist.add("# Temp mean [°C]:"+this.tempMean);
+        retlist.add("# Temp std [°C]:"+this.tempStd);
+        retlist.add("# deathChance [%]:"+this.deathChance);
+        retlist.add("# offspringRate [%]:"+this.offspringRate);
 
         return retlist;
     }
