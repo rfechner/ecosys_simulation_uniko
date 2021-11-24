@@ -64,4 +64,14 @@ public class Oak extends Tree{
     public float growthFactor() {
         return growthFactor;
     }
+
+    @Override
+    public float dc() {
+        return 0;
+    }
+
+    @Override
+    public float shadeIntolerance() {
+        return 0;
+    }
 }

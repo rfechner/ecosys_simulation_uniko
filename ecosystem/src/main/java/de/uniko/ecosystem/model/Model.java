@@ -40,7 +40,7 @@ public class Model implements Serializable {
     private double annualPercipitation;
     private double avgTemp;
 
-    private double apMean, apStd, tempMean, tempStd, offspringRate, deathChance;
+    private double apMean, apStd, tempMean, tempStd, offspringRate;
 
 
 
@@ -211,14 +211,13 @@ public class Model implements Serializable {
         return this.trees;
     }
 
-    public void init(double apMean, double apStd, double tempMean, double tempStd, double offspringChance, double deathChance){
+    public void init(double apMean, double apStd, double tempMean, double tempStd, double offspringChance){
 
         this.apMean = apMean;
         this.apStd = apStd;
 
         this.tempMean = tempMean;
         this.tempStd = tempStd;
-        this.deathChance = deathChance;
         this.offspringRate = offspringChance;
 
         int xOffset = 20; // draw 20 pixels more because of split screen border
@@ -327,10 +326,6 @@ public class Model implements Serializable {
         return this.currentEpisode;
     }
 
-    public double getDeathChance(){
-        return this.deathChance;
-    }
-
     public List<String> getMetaData(){
         List<String> retlist = new ArrayList<>();
 
@@ -340,7 +335,6 @@ public class Model implements Serializable {
         retlist.add("# AP std [mm]:"+this.apStd);
         retlist.add("# Temp mean [°C]:"+this.tempMean);
         retlist.add("# Temp std [°C]:"+this.tempStd);
-        retlist.add("# deathChance [%]:"+this.deathChance);
         retlist.add("# offspringRate [%]:"+this.offspringRate);
 
         return retlist;

@@ -49,9 +49,6 @@ public class Controller {
     public TextField apStdTextField;
 
     @FXML
-    public TextField deathChanceTextField;
-
-    @FXML
     public TextField offspringRateTextField;
 
     @FXML
@@ -71,11 +68,10 @@ public class Controller {
         double apMean = this.apMeanTextField.getText().isEmpty() ? 700d : Double.parseDouble(this.apMeanTextField.getText().replace(",", "."));
         double apStd = this.apStdTextField.getText().isEmpty() ? 50d : Double.parseDouble(this.apStdTextField.getText().replace(",", "."));
 
-        double dchance_percent = this.deathChanceTextField.getText().isEmpty() ? 1 : Double.parseDouble(this.deathChanceTextField.getText().replace(",", "."));
         double offspringRate_percent = this.offspringRateTextField.getText().isEmpty() ? 1 : Double.parseDouble(this.offspringRateTextField.getText().replace(",", "."));
 
         // init starting conditions
-        this.model.init(apMean, apStd, tempMean, tempStd, offspringRate_percent / 100d, dchance_percent / 100d);
+        this.model.init(apMean, apStd, tempMean, tempStd, offspringRate_percent / 100d);
 
         this.timer = new PauseTransition(Duration.millis(10));
 
@@ -128,7 +124,6 @@ public class Controller {
         this.tempStdTextField.clear();
         this.apMeanTextField.clear();
         this.apStdTextField.clear();
-        this.deathChanceTextField.clear();
         this.offspringRateTextField.clear();
 
         // reset underlying model

@@ -125,8 +125,7 @@ public abstract class Tree extends Rectangle implements Serializable {
             this.badYearCounter = 0;
         }
 
-        double epsilon = Model.getInstance().getDeathChance();
-        double deathChance = 1 - (1 - epsilon) * (1 - 0.005*Math.pow(badYearCounter, 2));
+        double deathChance = 1 - (1 - dc()) * (1 - 0.005*Math.pow(badYearCounter, 2));
 
         if(Math.random() < deathChance){
             Model.getInstance().removeTree(this);
@@ -191,7 +190,7 @@ public abstract class Tree extends Rectangle implements Serializable {
     //TODO: smarter function?
     public double lightPenalty(){
         // assuming Qmax = 1
-        return Math.exp(-0.25 * this.neighborLeafArea());
+        return Math.exp(-shadeIntolerance() * this.neighborLeafArea());
     }
 
     //TODO: is this right?
@@ -212,6 +211,8 @@ public abstract class Tree extends Rectangle implements Serializable {
     public abstract float b3();
     public abstract float d1();
     public abstract float growthFactor();
+    public abstract float dc();
+    public abstract float shadeIntolerance();
 
     /**
      *

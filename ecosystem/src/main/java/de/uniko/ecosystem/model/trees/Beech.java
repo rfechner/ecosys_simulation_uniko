@@ -11,6 +11,9 @@ public class Beech extends Tree{
     private static final float b3 = (HMAX-b1) / (DMAX*DMAX);
     private static final float d1 = 1f / (DMAX*HMAX);
     private static final float growthFactor = 150f;
+    private static final float deathChance = 0.0129554f;
+    private static final float shadeIntolerance = 0.35f;
+
 
 
 
@@ -62,5 +65,15 @@ public class Beech extends Tree{
     @Override
     public float growthFactor() {
         return growthFactor;
+    }
+
+    @Override
+    public float dc() {
+        return deathChance;
+    }
+
+    @Override
+    public float shadeIntolerance() {
+        return shadeIntolerance;
     }
 }

@@ -12,6 +12,8 @@ public class Spruce extends Tree {
     private static final float b3 = (HMAX-b1) / (DMAX*DMAX);
     private static final float d1 = 1f / (DMAX*HMAX);
     private static final float growthFactor = 100f;
+    private static final float deathChance = 0.0111149f;
+    private static final float shadeIntolerance = 0.25f;
 
 
 
@@ -62,6 +64,16 @@ public class Spruce extends Tree {
     @Override
     public float growthFactor() {
         return growthFactor;
+    }
+
+    @Override
+    public float dc() {
+        return deathChance;
+    }
+
+    @Override
+    public float shadeIntolerance() {
+        return shadeIntolerance;
     }
 
 }
