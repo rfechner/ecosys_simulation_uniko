@@ -73,13 +73,16 @@ public class Controller {
         // init starting conditions
         this.model.init(apMean, apStd, tempMean, tempStd, offspringRate_percent / 100d);
 
-        this.timer = new PauseTransition(Duration.millis(10));
+        this.timer = new PauseTransition(Duration.millis(2000));
 
         this.timer.setOnFinished( (e) -> {
             this.model.update();
             this.currentEpisode++;
 
             if(this.currentEpisode<=numberOfEpisodes){
+                if(currentEpisode == 2){
+                    timer.setDuration(Duration.millis(10));
+                }
                 this.timer.playFromStart();
             } else {
                 this.timer.stop();

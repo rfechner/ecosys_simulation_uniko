@@ -69,10 +69,6 @@ public class Model implements Serializable {
         return instance;
     }
 
-    private double linearfunction(double episode){
-        return 10d + 5d/500*episode;
-    }
-
     /** 1) add offspring
      *  2) delete dead trees (those that died in the last episode)
      *  3) update all trees
@@ -82,7 +78,7 @@ public class Model implements Serializable {
         this.currentEpisode ++;
 
         // calculate average Temperature for this episode.
-        this.avgTemp = random.nextGaussian()*this.tempStd + this.tempMean;
+        this.avgTemp = random.nextGaussian()*this.tempStd + this.linear(currentEpisode);
 
         // calculate annual Percipitation for this episode.
         this.annualPercipitation = random.nextGaussian()*this.apStd + this.apMean;
@@ -205,6 +201,10 @@ public class Model implements Serializable {
 
         }
 
+    }
+
+    public double linear(int currentEpisode){
+        return 10 + currentEpisode * 0.01;
     }
 
     public ObservableList<Tree> getTrees(){
@@ -335,7 +335,7 @@ public class Model implements Serializable {
         retlist.add("# AP std [mm]:"+this.apStd);
         retlist.add("# Temp mean [°C]:"+this.tempMean);
         retlist.add("# Temp std [°C]:"+this.tempStd);
-        retlist.add("# offspringRate [%]:"+this.offspringRate);
+        retlist.add("# offspringRate [%]:"+this.offspringRate * 100);
 
         return retlist;
     }
