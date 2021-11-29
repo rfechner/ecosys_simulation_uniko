@@ -22,10 +22,11 @@ public class DataSet {
     private static final String ENCODING = "UTF-8";
     List<String> entries = new ArrayList<>();
     List<Listener> listeners;
-    StringBuilder sb = new StringBuilder();
+    StringBuilder sb;
 
     public DataSet(List<Listener> listeners){
         this.listeners = listeners;
+        this.sb = new StringBuilder();
     }
 
 
@@ -44,11 +45,11 @@ public class DataSet {
             this.sb.setLength(0);
 
             for(Listener l : this.listeners){
-                sb.append(l.getColumnId()).append(DELIMITER);
+                this.sb.append(l.getColumnId()).append(DELIMITER);
             }
-            sb.deleteCharAt(sb.length() - 1);
+            this.sb.deleteCharAt(this.sb.length() - 1);
 
-            pw.println(sb);
+            pw.println(this.sb);
 
             for(String line : this.entries){
                 pw.println(line);
@@ -63,15 +64,15 @@ public class DataSet {
 
     public void update(){
         //clear Buffer
-        sb.setLength(0);
+        this.sb.setLength(0);
 
         for(Listener l : this.listeners){
-            sb.append(l.query()).append(DELIMITER);
+            this.sb.append(l.query()).append(DELIMITER);
         }
 
         // remove last semicolon
-        sb.deleteCharAt(sb.length() - 1);
+        this.sb.deleteCharAt(this.sb.length() - 1);
 
-        this.entries.add(sb.toString());
+        this.entries.add(this.sb.toString());
     }
 }
