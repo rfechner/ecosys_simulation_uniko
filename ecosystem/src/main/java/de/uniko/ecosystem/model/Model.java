@@ -241,9 +241,13 @@ public class Model implements Serializable {
     }
 
     public void reset(){
+        this.dataSet.reset();
         this.currentEpisode = 0;
         this.removeBuffer.clear();
+        this.treeCountMap.clear();
+        this.treeVolumeMap.clear();
         this.trees.clear();
+
     }
 
     public Integer getTreeCountForClass(Class<?extends Tree> cls){

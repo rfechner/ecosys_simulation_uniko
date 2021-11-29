@@ -75,4 +75,8 @@ public class DataSet {
 
         this.entries.add(this.sb.toString());
     }
+
+    public void reset(){
+        this.entries.clear();
+    }
 }
