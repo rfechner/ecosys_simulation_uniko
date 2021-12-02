@@ -125,7 +125,15 @@ public abstract class Tree extends Rectangle implements Serializable {
             this.badYearCounter = 0;
         }
 
-        double deathChance = 1 - (1 - dc()) * (1 - 0.005*Math.pow(badYearCounter, 2));
+        double deathChance;
+
+        if(badYearCounter > 0){
+            deathChance = 1 - Math.exp(-0.0837*badYearCounter);
+        } else {
+            deathChance = this.dc();
+        }
+
+
 
         if(Math.random() < deathChance){
             Model.getInstance().removeTree(this);

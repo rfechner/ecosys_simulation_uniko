@@ -170,7 +170,7 @@ public class Model implements Serializable {
      * @return whether the year had good rainfall and mild to hot temperatures
      */
     public boolean goodQualityYear(){
-        return this.annualPercipitation > 500
+        return this.annualPercipitation > 600
                 && this.avgTemp >= 8 && this.avgTemp <= 12;
     }
 
