@@ -8,7 +8,7 @@ public class TreeVolumeListener extends Listener {
 
     public TreeVolumeListener(Class<? extends Tree> cls ){
 
-        this.columnId = cls.getSimpleName() + " volume (m^3)";
+        this.columnId = cls.getSimpleName() + " volume (cm^3)";
         this.cls = cls;
     }
 
