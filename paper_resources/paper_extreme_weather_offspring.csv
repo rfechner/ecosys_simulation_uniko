@@ -5,7 +5,7 @@
 # Temp mean [°C]:f(t) = 0.01*t + 10
 # Temp std [°C]:2.5
 # offspringRate [%]:5.0
-Spruce (count),Spruce volume (m^3),Fir (count),Fir volume (m^3),Beech (count),Beech volume (m^3)
+Spruce (count),Spruce volume (cm^3),Fir (count),Fir volume (cm^3),Beech (count),Beech volume (cm^3)
 218,2.2128709885685152E8,53,1.1773661941465384E8,457,3.835245812340918E9
 230,2.2235764682189274E8,53,1.0855501525798672E8,466,3.765162850072699E9
 241,2.2080718115440863E8,47,8.722537299716872E7,484,3.749051383352346E9
