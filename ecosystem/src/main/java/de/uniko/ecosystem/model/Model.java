@@ -78,7 +78,7 @@ public class Model implements Serializable {
         this.currentEpisode ++;
 
         // calculate average Temperature for this episode.
-        this.avgTemp = random.nextGaussian()*this.tempStd + this.linear(currentEpisode);
+        this.avgTemp = random.nextGaussian()*this.tempStd + linear(this.currentEpisode);
 
         // calculate annual Percipitation for this episode.
         this.annualPercipitation = random.nextGaussian()*this.apStd + this.apMean;

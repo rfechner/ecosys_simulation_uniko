@@ -163,7 +163,7 @@ public abstract class Tree extends Rectangle implements Serializable {
             int debug = 1;
         }
 
-        if(lightPenalty()*waterPenalty()*temperaturePenalty() < 0){
+        if(!init && Model.getInstance().getEpisode() == 10){
             int debug = 1;
         }
 
@@ -198,12 +198,14 @@ public abstract class Tree extends Rectangle implements Serializable {
     //TODO: smarter function?
     public double lightPenalty(){
         // assuming Qmax = 1
-        return Math.exp(-shadeIntolerance() * this.neighborLeafArea());
+        return Math.exp(-shadeIntolerance() * this.neighborLeafArea() / 1e4);
     }
 
     //TODO: is this right?
     public double waterPenalty(){
-        return Math.min(1, Math.max(0.01, 264.172*this.leafArea* Model.getInstance().getAP() /(getW(this.diameter)*52*this.diameter)));
+        // cancelling factors in advance to reduce computation time
+        // 1e7 / (2.54 * 264.172) * 52 = 774966.34559
+        return Math.min(1, Math.max(0.01, this.leafArea* Model.getInstance().getAP() /((getW(this.diameter)*this.diameter * 774966.34559))));
     }
 
     public double temperaturePenalty(){
@@ -229,7 +231,7 @@ public abstract class Tree extends Rectangle implements Serializable {
      *          result of a linear function
      */
     public static double getW(double diameter){
-        return diameter <= 5d ? 1 : 0.36*diameter - 0.8;
+        return diameter <= 5d ? 0.01 : 0.0036*diameter - 0.008;
     }
 
 

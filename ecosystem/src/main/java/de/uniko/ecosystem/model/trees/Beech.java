@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 public class Beech extends Tree{
     private static final int HMAX = 2660;
     private static final int DMAX = 122;
-    private static final float c = 2.2f/ 10000;
+    private static final float c = 2.2f;
     private static final float b1 = 137f;
     private static final float b2 = 2f*(HMAX - b1) / DMAX;
     private static final float b3 = (HMAX-b1) / (DMAX*DMAX);

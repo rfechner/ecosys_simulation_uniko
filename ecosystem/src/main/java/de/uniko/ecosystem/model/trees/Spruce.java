@@ -6,7 +6,7 @@ public class Spruce extends Tree {
 
     private static final int HMAX = 1830;
     private static final int DMAX = 50;
-    private static final float c = 2.5f/ 10000;
+    private static final float c = 2.5f;
     private static final float b1 = 137f;
     private static final float b2 = 2f*(HMAX - b1) / DMAX;
     private static final float b3 = (HMAX-b1) / (DMAX*DMAX);
