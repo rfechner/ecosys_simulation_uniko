@@ -5,7 +5,7 @@ Bitte alle Informationen dem paper entnehmen! :)
 
 **tl;dr**
 
-Das Modell orientiert sich an dem JABOWA Modell. Erweitert wurde das Modell
+Das Modell orientiert sich an dem JABOVA Modell. Erweitert wurde das Modell
 um die Möglichkeit, dass Bäume sich vermehren können.
 
 Das Modell ist hauptsächlich in Java geschrieben, graphisches Framework ist JavaFX.
