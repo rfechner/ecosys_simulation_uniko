@@ -12,8 +12,8 @@ Das Modell ist hauptsächlich in Java geschrieben, graphisches Framework ist Jav
 
 **Q/A**
 
-Q: Wie bringe ich das Modell bei mir zum laufen?
-A: 
+Q: Wie bringe ich das Modell bei mir zum laufen? <br>
+A: <br>
 1) Das repository clonen mit einem beliebigen VC-tool.
 
 2) Projekt in die IDE der Wahl importieren, Projekt mit Maven bauen.
@@ -21,7 +21,7 @@ A:
 Community Edition oder mit der Student-license die Ultimate Edition herunterzuladen und
 dann das Projekt ecosystem zu importieren.
 
-Q: Gibt es Ideen, wie ich das Modell erweitern kann?
+Q: Gibt es Ideen, wie ich das Modell erweitern kann? <br>
 A: In dem Abschnitt "Erweiterungsmöglichkeiten" geben wir ein paar Ideen an.
 
 
